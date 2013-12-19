@@ -1,0 +1,9 @@
+{
+	"name": "dfirstweb",
+	"description": "A simple vibe.d server application.",
+	"copyright": "Copyright © 2013, frank",
+	"authors": ["frank"],
+	"dependencies": {
+		"vibe-d": ">=0.7.17"
+	}
+}
