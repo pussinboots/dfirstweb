@@ -7,6 +7,9 @@ import vibe.http.rest;
 import vibe.http.router;
 import vibe.http.server;
 import mysql;
+import std.c.stdlib;
+import std.conv;
+import std.string;
 
 @rootPathFromName
 interface Example1API
@@ -49,7 +52,8 @@ shared static this()
 	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
-	settings.port = 8080;
+	string port = to!string(getenv("PORT"));
+	settings.port = to!ushort(port);
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
