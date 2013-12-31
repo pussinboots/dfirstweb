@@ -35,7 +35,7 @@
  *    $(LI ResultSet: $(UL $(LI A random access range of rows, where a Row is basically an array of variant.)))
  *    $(LI ResultSequence: $(UL $(LIAn input range of similar rows.)))
  * )
- *
+6 *
  * It has currently only been compiled and unit tested on Ubuntu with D2.055 using a TCP loopback connection
  * to a server on the local machine.
  *
@@ -1597,12 +1597,12 @@ unittest
    bool ok = true;
    try
    {
-      auto c = new Connection("host=localhost;user=user;pwd=password;db=mysqld");
+      auto c = new Connection("host=localhost;user=root;pwd=root;db=mysql");
       scope(exit) c.close();
       // These may vary according to the server setup
       assert(c.protocol == 10);
-      assert(c.serverVersion == "5.1.54-1ubuntu4");
-      assert(c.serverCapabilities == 0b1111011111111111);
+      //assert(c.serverVersion == "5.1.54-1ubuntu4");
+      //assert(c.serverCapabilities == 0b1111011111111111);
       assert(c.serverStatus == 2);
       assert(c.charSet == 8);
       try {
@@ -3632,7 +3632,7 @@ unittest
       double d;
    }
    bool ok = true;
-   auto c = new Connection("localhost", "user", "password", "mysqld");
+   auto c = new Connection("localhost", "root", "root", "mysql");
    scope(exit) c.close();
    try
    {
@@ -3842,23 +3842,23 @@ unittest
       c1.sql = "insert into tblob values(321, NULL, 22.4, NULL, '2011-11-05 11:52:00')";
       c1.execSQL(ra);
 
-      uint delegate(ubyte[]) foo()
+      ulong delegate(ubyte[]) foo()
       {
          uint n = 20000000;
          uint cp = 0;
 
-         void fill(ubyte[] a, uint m)
+         void fill(ubyte[] a, ulong m)
          {
-            foreach (uint i; 0..m)
+            foreach (ulong i; 0..m)
             {
                a[i] = cast(ubyte) (cp & 0xff);
                cp++;
             }
          }
 
-         uint dg(ubyte[] dest)
+         ulong dg(ubyte[] dest)
          {
-            uint len = dest.length;
+            ulong len = dest.length;
             if (n >= len)
             {
                fill(dest, len);
@@ -4255,7 +4255,7 @@ public:
 
 unittest
 {
-   auto c = new Connection("localhost", "user", "password", "mysqld");
+   auto c = new Connection("localhost", "root", "root", "mysql");
    scope(exit) c.close();
    MetaData md = MetaData(c);
    string[] dbList = md.databases();
