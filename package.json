@@ -6,5 +6,5 @@
 	"dependencies": {
 		"vibe-d": ">=0.7.17"
 	},
-	"dflags-dmd": "-L-levent_pthreads -L-levent -L-lssl -L-lcrypto"
+	"dflags-dmd": ["-L-levent_pthreads", "-L-levent", "-L-lssl", "-L-lcrypto"]
 }
