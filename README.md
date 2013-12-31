@@ -11,3 +11,5 @@ The build is now also green and use
 as defsult build command.
 
 Second step run D with the heroku plattform.
+
+first set custom buildpack for D heroku config:set BUILDPACK_URL=https://github.com/pussinboots/heroku-buildpack-d
