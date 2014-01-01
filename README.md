@@ -23,6 +23,8 @@ are needed by vibe.d.
 For runtime add the pkg config folder to the PKG_CONFIG_PATH environment variable so that 
 all libaries they was build during the dub prebuild (libevent and libev) needed for the
 vibe.d framework are also accessibile during runtime. The command below add the pkg config folder
-from /app/opt/lib/pkgconfig to the PKG_CONFIG_PATH environment variable.
+from /app/opt/lib/pkgconfig to the PKG_CONFIG_PATH environment variable. The second environment
+variable LD_LIBRARY_PATH is also need to find the dependent library at runtime.
 
     heroku config:add PKG_CONFIG_PATH=/app/opt/lib/pkgconfig
+    heroku config:add LD_LIBRARY_PATH=/app/opt/lib
