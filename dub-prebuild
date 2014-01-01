@@ -24,7 +24,7 @@ LIBEV_ARCHIVE=libev-4.15
 LIBEV_DIR=$TOOLCHAIN/$LIBEV_ARCHIVE
 LIBEV_VERSION=libev.so.4.0.0
 
-echo "dub-prebuild"
+echo "dub-prebuild "
 
 # Build libevent
 if [ ! -f $PREFIX/lib/$LIBEVENT_VERSION ]; then
@@ -77,9 +77,5 @@ cp -R $CACHE_PREFIX $BUILD_DIR/opt
 
 # Extra build to resolve initial deps
 echo " + Resolving dependencies"
-
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/opt/lib
-export LD_RUN_PATH=$LD_RUN_PATH:/app/opt/lib
-export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:/app/opt/lib/pkgconfig
 
 dub -q build

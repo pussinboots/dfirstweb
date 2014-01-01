@@ -47,8 +47,8 @@ class Example1 : Example1API
 }
 
 class Stock {string name; double value;}
-//shared static this()
-void main()
+shared static this()
+//void main()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
@@ -58,13 +58,3 @@ void main()
 	listenHTTP(settings, routes);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
 }
-
-/*
- 
-import std.stdio;
- 
-void main()
-{
-    writeln("Hello, World!");
-}
-*/
