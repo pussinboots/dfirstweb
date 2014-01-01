@@ -54,8 +54,9 @@ shared static this()
 	registerRestInterface(routes, new Example1());
 	string port = to!string(getenv("PORT"));
 	settings.port = to!ushort(port);
-	settings.bindAddresses = ["::1", "127.0.0.1"];
+	//settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
+	logInfo("Start with port "~port);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
 }
 void main(string[] args)
