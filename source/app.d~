@@ -9,6 +9,7 @@ import mysql;
 import std.c.stdlib;
 import std.conv;
 import std.string;
+import std.getopt;
 
 @rootPathFromName
 interface Example1API
@@ -51,7 +52,7 @@ shared static this()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
-	string port = to!string(getenv("http.port"));
+	string port = to!string(getenv("PORT"));
 	settings.port = to!ushort(port);
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
