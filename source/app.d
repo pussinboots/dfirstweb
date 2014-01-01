@@ -15,8 +15,8 @@ import std.getopt;
 interface Example1API
 {        
         string getSomeInfo();
-
 	Stock[] getStocks();
+	Balance[] getBalances();
 }
 
 class Example1 : Example1API
@@ -24,7 +24,8 @@ class Example1 : Example1API
 	 override:
                 string getSomeInfo()
                 {
-                        return "Some Info!";
+			//TODO: added database information and some os information maybe
+                        return "{service:'balanceservice', version:'0.0.9'}";
                 }
 
                 Stock[] getStocks()
@@ -46,9 +47,29 @@ class Example1 : Example1API
 		   	}
 			return stocks;
                 }
+		Balance[] getBalances()
+                {
+                        auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
+			scope(exit) c.close();			
+			auto c1 = Command(c);
+			c1.sql = "select id, name, value, date from balances";
+			ResultSet rs = c1.execSQLResult();
+			Json.emptyObject;
+			Balance[] stocks;
+		 	foreach (Row row; rs) {
+				Balance stock = new Balance();
+				stock.id = row[0].get!int;
+				stock.name = row[1].toString();
+				stock.value = row[2].get!double;
+				stock.date = row[3].get!(DateTime);
+				stocks ~= stock;
+		   	}
+			return stocks;
+                }
 }
 
 class Stock {int id; string name; double value; DateTime date;}
+class Balance {int id; string name; double value; DateTime date;}
 shared static this()
 //void main()
 {	auto settings = new HTTPServerSettings;

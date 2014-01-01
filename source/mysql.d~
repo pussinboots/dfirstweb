@@ -772,14 +772,14 @@ struct OKPacket
             //4.1+ error packet
             ubp++;
             enforceEx!MYX(ubp+5 < pe, "Malformed OK/Error packet");
-            sqlState[] = (cast(char[])ubp[0LU..5LU])[]
+            sqlState[] = (cast(char[])ubp[0LU..5LU])[];
             ubp += 5;
          }
          ulong rem = pe-ubp;
          if (rem)
          {
             message.length = rem;
-            message[] = cast(char[]) ubp[0..rem];
+            message[] =  (cast(char[])ubp[0LU..rem])[];
          }
       }
       else
@@ -799,7 +799,7 @@ struct OKPacket
          if (rem)
          {
             message.length = rem;
-            message[] = cast(char[]) ubp[0..rem];
+            message[] = (cast(char[])ubp[0LU..rem])[];
          }
       }
    }
