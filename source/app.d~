@@ -16,7 +16,7 @@ interface Example1API
 {        
         string getSomeInfo();
 	Stock[] getStocks();
-	Balance[] getBalances()
+	Balance[] getBalances();
 }
 
 class Example1 : Example1API
