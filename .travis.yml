@@ -5,3 +5,9 @@ before_install:
 - sudo apt-get update && sudo apt-get -y --allow-unauthenticated install --reinstall d-apt-keyring && sudo apt-get update
 - sudo apt-get install dub
 - sudo apt-get install dmd-bin
+deploy:
+  provider: heroku
+  app: wicket-scala
+  strategy: git 
+  api_key: 
+    secure: DCefRz801DTcXla9IAQwSGGkFVNtigMEvWPMSkNNELBjTY3RwaEOIxiDLAeNrZXDya/pd5glevQhl7WpyR1GIaLJCe0hfkrgmQF0ErKCr1SQ+kNFPTd6ltyeMevyA2Z5+tRnDmfXAd3mELuumd8QHBgojkR0Opl8ennzHAbgN4k=
