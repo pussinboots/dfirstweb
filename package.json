@@ -4,7 +4,10 @@
 	"copyright": "Copyright © 2013, frank",
 	"authors": ["frank"],
 	"dependencies": {
-		"vibe-d": ">=0.7.17"
+		"vibe-d": ">=0.7.17",
+		"libevent": "~master",
+		"libev": "~master",
+		"openssl": "~master"
 	},
 	"configurations": [
 		{
