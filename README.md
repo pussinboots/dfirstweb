@@ -12,4 +12,10 @@ as defsult build command.
 
 Second step run D with the heroku plattform.
 
-first set custom buildpack for D heroku config:set BUILDPACK_URL=https://github.com/pussinboots/heroku-buildpack-d
+first set custom buildpack for D 
+
+    heroku config:set BUILDPACK_URL=https://github.com/pussinboots/heroku-buildpack-d
+
+If you want to build a vibe.d based application than see the file ()
+that added two binaries dependencies to the heroku vm (libevent, libev) they
+are needed by vibe.d.
