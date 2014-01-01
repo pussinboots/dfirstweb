@@ -47,9 +47,9 @@ class Example1 : Example1API
 }
 
 class Stock {string name; double value;}
-shared static this()
-{
-	auto settings = new HTTPServerSettings;
+//shared static this()
+void main()
+{	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
 	string port = to!string(getenv("PORT"));
