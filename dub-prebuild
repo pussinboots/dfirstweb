@@ -1,0 +1,80 @@
+#!/bin/sh
+
+mkdir -p "$1" "$2"
+BUILD_DIR=$(cd "$1" && pwd)
+CACHE_DIR=$(cd "$2" && pwd)
+
+ARCHIVES=$CACHE_DIR/archives
+TOOLCHAIN=$BUILD_DIR/toolchain
+PREFIX=/app/opt
+CACHE_PREFIX=$CACHE_DIR/opt
+
+mkdir -p $ARCHIVES $TOOLCHAIN $CACHE_PREFIX
+if [ ! -e $PREFIX ]; then
+    ln -s $CACHE_PREFIX $PREFIX
+fi
+
+LIBEVENT_ARCHIVE_PATH=https://github.com/downloads/libevent/libevent
+LIBEVENT_ARCHIVE=libevent-2.0.21-stable
+LIBEVENT_DIR=$TOOLCHAIN/$LIBEVENT_ARCHIVE
+LIBEVENT_VERSION=libevent_pthreads-2.0.so.5.1.9
+
+LIBEV_ARCHIVE_PATH=http://dist.schmorp.de/libev
+LIBEV_ARCHIVE=libev-4.15
+LIBEV_DIR=$TOOLCHAIN/$LIBEV_ARCHIVE
+LIBEV_VERSION=libev.so.4.0.0
+
+echo "dub-prebuild"
+
+# Build libevent
+if [ ! -f $PREFIX/lib/$LIBEVENT_VERSION ]; then
+    echo " + Compile libevent"
+    cd $ARCHIVES
+
+    # download source
+    if [ ! -f $LIBEVENT_ARCHIVE.tar.gz ]; then
+        rm -f libevent-*.tar.gz
+        curl -L --retry 3 "$LIBEVENT_ARCHIVE_PATH/$LIBEVENT_ARCHIVE.tar.gz" -o $LIBEVENT_ARCHIVE.tar.gz
+    fi
+
+    # extract
+    mkdir -p $LIBEVENT_DIR
+    cd $LIBEVENT_DIR/..
+    rm -rf $LIBEVENT_DIR
+    tar xzf $ARCHIVES/$LIBEVENT_ARCHIVE.tar.gz
+
+    # configure and compile
+    cd $LIBEVENT_DIR
+    ./configure --prefix=$PREFIX
+    make all install
+fi
+
+# Build libev
+if [ ! -f $PREFIX/lib/$LIBEV_VERSION ]; then
+    echo " + Compile libev"
+    cd $ARCHIVES
+
+    # download source
+    if [ ! -f $LIBEV_ARCHIVE.tar.gz ]; then
+        rm -f libev-*.tar.gz
+        curl -L --retry 3 "$LIBEV_ARCHIVE_PATH/$LIBEV_ARCHIVE.tar.gz" -o $LIBEV_ARCHIVE.tar.gz
+    fi
+
+    # extract
+    mkdir -p $LIBEV_DIR
+    cd $LIBEV_DIR/..
+    rm -rf $LIBEV_DIR
+    tar xzf $ARCHIVES/$LIBEV_ARCHIVE.tar.gz
+
+    # configure and compile
+    cd $LIBEV_DIR
+    ./configure --prefix=$PREFIX
+    make all install
+fi
+
+# Copy compiled libs to app
+cp -R $CACHE_PREFIX $BUILD_DIR/opt
+
+# Extra build to resolve initial deps
+echo " + Resolving dependencies"
+dub -q build
