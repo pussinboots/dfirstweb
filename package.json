@@ -6,5 +6,5 @@
 	"dependencies": {
 		"vibe-d": ">=0.7.17"
 	},
-	"lflags": ["-RLIBDIR"]
+	"versions": ["VibeDefaultMain"]
 }
