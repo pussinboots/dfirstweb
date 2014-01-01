@@ -1,6 +1,10 @@
 dfirstweb
 =========
 
+- Travis Ci https://travis-ci.org/pussinboots/dfirstweb
+- Heroku buildpack D https://github.com/pussinboots/heroku-buildpack-d
+
+
 My first steps with the D programming language. I will try to build a simple json rest service
 , that i already have programmed with scala, with the D language.
 
