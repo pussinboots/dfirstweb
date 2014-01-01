@@ -55,23 +55,22 @@ class Example1 : Example1API
 			c1.sql = "select id, name, value, date from balances";
 			ResultSet rs = c1.execSQLResult();
 			Json.emptyObject;
-			Balance[] stocks;
+			Balance[] balances;
 		 	foreach (Row row; rs) {
-				Balance stock = new Balance();
-				stock.id = row[0].get!int;
-				stock.name = row[1].toString();
-				stock.value = row[2].get!double;
-				stock.date = row[3].get!(DateTime);
-				stocks ~= stock;
+				Balance balance = new Balance();
+				balance.id = row[0].get!int;
+				balance.name = row[1].toString();
+				balance.value = row[2].get!double;
+				balance.date = row[3].get!(DateTime);
+				balances ~= balance;
 		   	}
-			return stocks;
+			return balances;
                 }
 }
 
 class Stock {int id; string name; double value; DateTime date;}
 class Balance {int id; string name; double value; DateTime date;}
 shared static this()
-//void main()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
