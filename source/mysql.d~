@@ -772,7 +772,7 @@ struct OKPacket
             //4.1+ error packet
             ubp++;
             enforceEx!MYX(ubp+5 < pe, "Malformed OK/Error packet");
-            sqlState[] = cast(char[]) ubp[0..5];
+            sqlState[] = (cast(char[])ubp[0LU..5LU])[]
             ubp += 5;
          }
          ulong rem = pe-ubp;
@@ -1602,7 +1602,7 @@ unittest
       // These may vary according to the server setup
       assert(c.protocol == 10);
       //assert(c.serverVersion == "5.1.54-1ubuntu4");
-      assert(c.serverCapabilities == 0b1111011111111111);
+      //assert(c.serverCapabilities == 0b1111011111111111);
       assert(c.serverStatus == 2);
       assert(c.charSet == 8);
       try {
