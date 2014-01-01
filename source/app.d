@@ -1,4 +1,3 @@
-import vibe.d;
 import vibe.appmain;
 import vibe.core.core;
 import vibe.core.log;
@@ -47,8 +46,8 @@ class Example1 : Example1API
 }
 
 class Stock {string name; double value;}
-//shared static this()
-void main()
+shared static this()
+//void main()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());

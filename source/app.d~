@@ -1,4 +1,3 @@
-import vibe.d;
 import vibe.appmain;
 import vibe.core.core;
 import vibe.core.log;
