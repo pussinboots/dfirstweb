@@ -57,3 +57,11 @@ shared static this()
 	listenHTTP(settings, routes);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
 }
+void main()
+{
+	// returns false if a help screen has been requested and displayed (--help)
+	if (!finalizeCommandLineOptions())
+		return;
+	lowerPrivileges();
+	runEventLoop();
+}
