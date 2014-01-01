@@ -12,10 +12,17 @@ as defsult build command.
 
 Second step run D with the heroku plattform.
 
-first set custom buildpack for D 
+first set custom buildpack for D ( https://github.com/pussinboots/heroku-buildpack-d )
 
     heroku config:set BUILDPACK_URL=https://github.com/pussinboots/heroku-buildpack-d
 
-If you want to build a vibe.d based application than see the file ()
+If you want to build a vibe.d based application than see the file (dub-prebuild)
 that added two binaries dependencies to the heroku vm (libevent, libev) they
 are needed by vibe.d.
+
+For runtime add the pkg config folder to the PKG_CONFIG_PATH environment variable so that 
+all libaries they was build during the dub prebuild (libevent and libev) needed for the
+vibe.d framework are also accessibile during runtime. The command below add the pkg config folder
+from /app/opt/lib/pkgconfig to the PKG_CONFIG_PATH environment variable.
+
+    heroku config:add PKG_CONFIG_PATH=/app/opt/lib/pkgconfig
