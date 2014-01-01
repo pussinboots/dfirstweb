@@ -9,7 +9,7 @@
 			"name": "application",
 			"targetType": "executable",
 			"mainSourceFile": "source/app.d",
-			"libs": ["curl" ,"ev", "openssl"],
+			"libs": ["curl" , "openssl"],
 			"libs-posix-dmd": ["phobos2"],
 		}
 	]
