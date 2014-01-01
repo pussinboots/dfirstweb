@@ -1,4 +1,4 @@
-import vibe.d;
+/*import vibe.d;
 import vibe.appmain;
 import vibe.core.core;
 import vibe.core.log;
@@ -57,4 +57,15 @@ shared static this()
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
+}
+*/
+/* This program prints a
+   hello world message
+   to the console.  */
+ 
+import std.stdio;
+ 
+void main()
+{
+    writeln("Hello, World!");
 }

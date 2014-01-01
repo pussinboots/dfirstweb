@@ -52,7 +52,7 @@ shared static this()
 	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
-	string port = getenv("PORT");
+	string port = to!string(getenv("PORT"));
 	settings.port = to!ushort(port);
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
