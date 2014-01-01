@@ -7,7 +7,7 @@ before_install:
 - sudo apt-get install dmd-bin
 deploy:
   provider: heroku
-  app: wicket-scala
+  app: dfirstweb
   strategy: git 
   api_key: 
     secure: DCefRz801DTcXla9IAQwSGGkFVNtigMEvWPMSkNNELBjTY3RwaEOIxiDLAeNrZXDya/pd5glevQhl7WpyR1GIaLJCe0hfkrgmQF0ErKCr1SQ+kNFPTd6ltyeMevyA2Z5+tRnDmfXAd3mELuumd8QHBgojkR0Opl8ennzHAbgN4k=
