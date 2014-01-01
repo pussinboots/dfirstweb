@@ -3,13 +3,14 @@
 	"description": "A simple vibe.d server application.",
 	"copyright": "Copyright © 2013, frank",
 	"authors": ["frank"],
-
+	"dependencies": {
+		"vibe-d": ">=0.7.17"
+	},
 	"configurations": [
 		{
 			"name": "application",
 			"targetType": "executable",
 			"mainSourceFile": "source/app.d",
-			"libs": ["curl" , "openssl"],
 			"libs-posix-dmd": ["phobos2"],
 		}
 	]
