@@ -32,21 +32,23 @@ class Example1 : Example1API
                         auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
-			c1.sql = "select * from stocks";
+			c1.sql = "select id, name, value, date from stocks";
 			ResultSet rs = c1.execSQLResult();
 			Json.emptyObject;
 			Stock[] stocks;
 		 	foreach (Row row; rs) {
 				Stock stock = new Stock();
+				stock.id = row[0].get!uint;
 				stock.name = row[1].toString();
 				stock.value = row[2].get!double;
+				stock.date = row[3].get!(DateTime);
 				stocks ~= stock;
 		   	}
 			return stocks;
                 }
 }
 
-class Stock {string name; double value;}
+class Stock {uint id; string name; double value; DateTime date;}
 shared static this()
 //void main()
 {	auto settings = new HTTPServerSettings;
@@ -54,9 +56,10 @@ shared static this()
 	registerRestInterface(routes, new Example1());
 	string port = to!string(getenv("PORT"));
 	settings.port = to!ushort(port);
-	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
+	logInfo("Start with port "~port);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
+	logInfo("or on heroku open http://firstd.herokuapp.com/example1_api/some_info in your browser.");
 }
 void main(string[] args)
 {
