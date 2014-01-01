@@ -11,6 +11,9 @@ import std.conv;
 import std.string;
 import std.getopt;
 
+class Stock {int id; string name; double value; DateTime date;}
+class Balance {int id; string name; double value; DateTime date;}
+
 @rootPathFromName
 interface Example1API 
 {       string getSomeInfo();
@@ -62,9 +65,6 @@ class Example1 : Example1API
 			return balances;
                 }
 }
-
-class Stock {int id; string name; double value; DateTime date;}
-class Balance {int id; string name; double value; DateTime date;}
 shared static this()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
