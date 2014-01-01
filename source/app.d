@@ -9,6 +9,7 @@ import mysql;
 import std.c.stdlib;
 import std.conv;
 import std.string;
+import std.getopt;
 
 @rootPathFromName
 interface Example1API
@@ -51,17 +52,19 @@ shared static this()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;
 	registerRestInterface(routes, new Example1());
-	string port = to!string(getenv("PORT"));
+	string port = to!string(getenv("http.port"));
 	settings.port = to!ushort(port);
 	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
 	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
 }
-void main()
+void main(string[] args)
 {
 	// returns false if a help screen has been requested and displayed (--help)
 	if (!finalizeCommandLineOptions())
 		return;
+	ushort port = 8080;
+  	getopt(args, "port", &port);
 	lowerPrivileges();
 	runEventLoop();
 }
