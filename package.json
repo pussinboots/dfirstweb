@@ -9,12 +9,4 @@
 		"libev": "~master",
 		"openssl": "~master"
 	},
-	"configurations": [
-		{
-			"name": "application",
-			"targetType": "executable",
-			"mainSourceFile": "source/app.d",
-			"libs-posix-dmd": ["phobos2"],
-		}
-	]
 }
