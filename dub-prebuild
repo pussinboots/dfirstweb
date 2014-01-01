@@ -79,5 +79,6 @@ cp -R $CACHE_PREFIX $BUILD_DIR/opt
 echo " + Resolving dependencies"
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/app/opt/lib
+export LD_RUN_PATH=$LD_RUN_PATH:/app/opt/lib
 
 dub -q build
