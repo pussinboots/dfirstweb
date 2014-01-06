@@ -14,7 +14,7 @@ import std.getopt;
 class Stock {int id; string name; double value; DateTime date;}
 class Balance {int id; string name; double value; DateTime date;}
 
-@rootPathFromName
+@rootPath("/")
 interface Example1API 
 {       string getInfo();
 	string getStatus();

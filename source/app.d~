@@ -14,7 +14,7 @@ import std.getopt;
 class Stock {int id; string name; double value; DateTime date;}
 class Balance {int id; string name; double value; DateTime date;}
 
-@rootPathFromName
+@rootPath("/")
 interface Example1API 
 {       string getInfo();
 	string getStatus();
@@ -42,7 +42,7 @@ class Example1 : Example1API
 			} catch (Exception e) 
 			{	db = db ~ ":" ~e.msg;
 			} 
-			return "{service:'balanceservice', }";
+			return "{service:'balanceservice', database:'"~db~"'}";
                 }
 
                 Stock[] getStocks() 
