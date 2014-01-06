@@ -16,16 +16,33 @@ class Balance {int id; string name; double value; DateTime date;}
 
 @rootPathFromName
 interface Example1API 
-{       string getSomeInfo();
+{       string getInfo();
+	string getStatus();
 	Stock[] getStocks();
 	Balance[] getBalances();
 }
 
 class Example1 : Example1API
 {	override:
-                string getSomeInfo() 
-		{	//TODO: added database information and some os information maybe
-                        return "{service:'balanceservice', version:'0.0.9'}";
+                string getInfo() 
+		{	string versionNumber = to!string(getenv("rel"));
+                        return "{service:'balanceservice', version:'" ~ versionNumber ~ "'}";
+                }
+		string getSTatus() 
+		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
+			scope(exit) c.close();			
+			auto c1 = Command(c);
+			string db = "failed";
+			try  {
+				c1.sql = "select * from stocks limit 1";
+				c1.execSQLResult();
+				c1.sql = "select * from balances limit 1";
+				c1.execSQLResult();
+				db = "okay";
+			} catch (Exception e) {
+				db = db ~ ":" ~e.msg;
+			} 
+			return "{service:'balanceservice', }";
                 }
 
                 Stock[] getStocks() 
