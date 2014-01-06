@@ -10,6 +10,7 @@ import std.c.stdlib;
 import std.conv;
 import std.string;
 import std.getopt;
+import std.variant;
 
 class Stock {int id; string name; double value; DateTime date;}
 class Balance {int id; string name; double value; DateTime date;}
@@ -18,8 +19,8 @@ class Balance {int id; string name; double value; DateTime date;}
 interface Example1API 
 {       string getInfo();
 	string getStatus();
-	Stock[] getStocks();
-	Balance[] getBalances();
+	Stock[] getStocks(int page = 1, int items = 25);
+	Balance[] getBalances(int page = 1, int items = 25);
 }
 
 class Example1 : Example1API
@@ -45,12 +46,18 @@ class Example1 : Example1API
 			return "{service:'balanceservice', database:'"~db~"'}";
                 }
 
-                Stock[] getStocks() 
+                Stock[] getStocks(int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
-			c1.sql = "select id, name, value, date from stocks";
-			ResultSet rs = c1.execSQLResult();
+			c1.sql = "select id, name, value, date from stocks limit ?,?";
+			c1.prepare();			
+			Variant[] va2;
+			va2.length = 2;
+			va2[0] = items * (page-1);
+			va2[1] = items;
+			c1.bindParameters(va2);			
+			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
 			Stock[] stocks;
 		 	foreach (Row row; rs) 
@@ -63,12 +70,18 @@ class Example1 : Example1API
 		   	}
 			return stocks;
                 }
-		Balance[] getBalances() 
+		Balance[] getBalances(int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
-			c1.sql = "select id, name, value, date from balances";
-			ResultSet rs = c1.execSQLResult();
+			c1.sql = "select id, name, value, date from balances limit ?,?";
+			c1.prepare();			
+			Variant[] va2;
+			va2.length = 2;
+			va2[0] = items * (page-1);
+			va2[1] = items;
+			c1.bindParameters(va2);			
+			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
 			Balance[] balances;
 		 	foreach (Row row; rs) 
@@ -90,8 +103,8 @@ shared static this()
 	settings.port = to!ushort(port);
 	listenHTTP(settings, routes);
 	logInfo("Start with port "~port);
-	logInfo("Please open http://localhost:8080/example1_api/some_info in your browser.");
-	logInfo("or on heroku open http://firstd.herokuapp.com/example1_api/some_info in your browser.");
+	logInfo("Please open http://localhost:8080/info in your browser.");
+	logInfo("or on heroku open http://firstd.herokuapp.com/info in your browser.");
 }
 void main(string[] args)
 {	// returns false if a help screen has been requested and displayed (--help)

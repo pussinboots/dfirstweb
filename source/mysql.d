@@ -1,4 +1,5 @@
 /**
+ * github : https://github.com/britseye/mysqln
  * A native D driver for the MySQL database system. Source file mysql.d.
  *
  * This module attempts to provide composite objects and methods that will allow a wide range of common database
@@ -2259,7 +2260,7 @@ private:
       _rb.length = _ra.length;
       foreach (ulong i; 0.._ra.length)
          _rb[i] = i;
-      _cr = _rb[0];
+      if(!empty) _cr = _rb[0];
    }
 
 public:
