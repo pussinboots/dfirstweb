@@ -25,7 +25,8 @@ class Example1 : Example1API
 {	override:
                 string getSomeInfo() 
 		{	//TODO: added database information and some os information maybe
-                        return "{service:'balanceservice', version:'0.0.9'}";
+			string versionNumber = to!string(getenv("rel"));
+                        return "{service:'balanceservice', version:'" ~ versionNumber ~ "'}";
                 }
 
                 Stock[] getStocks() 
