@@ -42,7 +42,7 @@ class Example1 : Example1API
 			} catch (Exception e) 
 			{	db = db ~ ":" ~e.msg;
 			} 
-			return "{service:'balanceservice', }";
+			return "{service:'balanceservice', database:'"~db~"'}";
                 }
 
                 Stock[] getStocks() 
