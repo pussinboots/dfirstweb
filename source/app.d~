@@ -19,8 +19,8 @@ class Balance {int id; string name; double value; DateTime date;}
 interface Example1API 
 {       string getInfo();
 	string getStatus();
-	Stock[] getStocks(int page = 1, int items = 25);
-	Balance[] getBalances(int page = 1, int items = 25);
+	Stock[] getStocks(string name, int page = 1, int items = 25);
+	Balance[] getBalances(string name, int page = 1, int items = 25);
 }
 
 class Example1 : Example1API
@@ -46,16 +46,26 @@ class Example1 : Example1API
 			return "{service:'balanceservice', database:'"~db~"'}";
                 }
 
-                Stock[] getStocks(int page, int items) 
+                Stock[] getStocks(string name, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
-			c1.sql = "select id, name, value, date from stocks limit ?,?";
+			auto where = " where ";
+			if (!name.length) where = "";
+			else where = where ~ "name =? ";
+			c1.sql = "select id, name, value, date from stocks "~where~" limit ?,?";
 			c1.prepare();			
 			Variant[] va2;
-			va2.length = 2;
-			va2[0] = items * (page-1);
-			va2[1] = items;
+			if (!name.length) 
+			{	va2.length = 2;
+				va2[0] = items * (page-1);
+				va2[1] = items;
+			} else 
+			{	va2.length = 3;
+				va2[0] = name;
+				va2[1] = items * (page-1);
+				va2[2] = items;
+			}
 			c1.bindParameters(va2);			
 			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
@@ -70,16 +80,26 @@ class Example1 : Example1API
 		   	}
 			return stocks;
                 }
-		Balance[] getBalances(int page, int items) 
+		Balance[] getBalances(string name, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
-			c1.sql = "select id, name, value, date from balances limit ?,?";
+			auto where = " where ";
+			if (!name.length) where = "";
+			else where = where ~ "name =? ";
+			c1.sql = "select id, name, value, date from balances "~where~" limit ?,?";
 			c1.prepare();			
 			Variant[] va2;
-			va2.length = 2;
-			va2[0] = items * (page-1);
-			va2[1] = items;
+			if (!name.length) 
+			{	va2.length = 2;
+				va2[0] = items * (page-1);
+				va2[1] = items;
+			} else 
+			{	va2.length = 3;
+				va2[0] = name;
+				va2[1] = items * (page-1);
+				va2[2] = items;
+			}
 			c1.bindParameters(va2);			
 			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
