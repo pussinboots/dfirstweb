@@ -29,18 +29,18 @@ class Example1 : Example1API
                         return "{service:'balanceservice', version:'" ~ versionNumber ~ "'}";
                 }
 		string getStatus() 
-		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
-			scope(exit) c.close();			
-			auto c1 = Command(c);
-			string db = "failed";
-			try  {
+		{	string db = "failed";
+			try  
+			{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
+				scope(exit) c.close();
+				auto c1 = Command(c);		
 				c1.sql = "select * from stocks limit 1";
 				c1.execSQLResult();
 				c1.sql = "select * from balances limit 1";
 				c1.execSQLResult();
 				db = "okay";
-			} catch (Exception e) {
-				db = db ~ ":" ~e.msg;
+			} catch (Exception e) 
+			{	db = db ~ ":" ~e.msg;
 			} 
 			return "{service:'balanceservice', }";
                 }
