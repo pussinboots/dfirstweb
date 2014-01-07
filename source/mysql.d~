@@ -2260,7 +2260,7 @@ private:
       _rb.length = _ra.length;
       foreach (ulong i; 0.._ra.length)
          _rb[i] = i;
-      _cr = _rb[0];
+      if(!empty) _cr = _rb[0];
    }
 
 public:
@@ -3003,6 +3003,7 @@ public:
    ulong purgeResult()
    {
       ulong rows = 0;
+	writeln("  fieldCount 1 ");
       if (_fieldCount)
       {
          if (_headersPending)
@@ -3018,9 +3019,11 @@ public:
                   _headersPending = false;
                   break;
                }
+		writeln("  purge header ");
                enforceEx!MYX(i < _fieldCount, "Field header count exceeded but no EOF packet found.");
             }
          }
+	 writeln("  rowsPending 1 ");
          if (_rowsPending)
          {
             for (;;  rows++)
@@ -3034,10 +3037,12 @@ public:
                   _rowsPending = _pendingBinary = false;
                   break;
                }
+		writeln("  purge ");
             }
          }
       }
       _fieldCount = 0;
+	writeln("  resetPacket 1 ");
       _con.resetPacket();
       return rows;
    }
@@ -3462,7 +3467,7 @@ c.param(1) = "The answer";
       foreach (uint i, dummy; args)
       {
          enforceEx!MYX(typeid(args[i]).toString() == rr._uva[i].type.toString(),
-                       "Tuple "~to!string(i)~" type and column type are not compatible.");
+                       "Tuple "~to!string(i)~" type ("~typeid(args[i]).toString()~") and column type ("~rr._uva[i].type.toString()~") are not compatible.");
          args[i] = rr._uva[i].get!(typeof(args[i]));
       }
       // If there were more rows, flush them away

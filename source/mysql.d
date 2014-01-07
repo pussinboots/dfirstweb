@@ -3462,7 +3462,7 @@ c.param(1) = "The answer";
       foreach (uint i, dummy; args)
       {
          enforceEx!MYX(typeid(args[i]).toString() == rr._uva[i].type.toString(),
-                       "Tuple "~to!string(i)~" type and column type are not compatible.");
+                       "Tuple "~to!string(i)~" type ("~typeid(args[i]).toString()~") and column type ("~rr._uva[i].type.toString()~") are not compatible.");
          args[i] = rr._uva[i].get!(typeof(args[i]));
       }
       // If there were more rows, flush them away

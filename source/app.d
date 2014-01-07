@@ -12,15 +12,21 @@ import std.string;
 import std.getopt;
 import std.variant;
 
+class Collection(T)
+{	T[] items;
+	long count;
+}
 class Stock {int id; string name; double value; DateTime date;}
 class Balance {int id; string name; double value; DateTime date;}
+//alias Collection!(Balance) BalanceCollection;
+class BalanceCollection : Collection!Balance {}
 
 @rootPath("/")
 interface Example1API 
 {       string getInfo();
 	string getStatus();
-	Stock[] getStocks(string name, int page = 1, int items = 25);
-	Balance[] getBalances(string name, int page = 1, int items = 25);
+	Stock[] getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
+	BalanceCollection getBalances(string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
 
 class Example1 : Example1API
@@ -46,27 +52,20 @@ class Example1 : Example1API
 			return "{service:'balanceservice', database:'"~db~"'}";
                 }
 
-                Stock[] getStocks(string name, int page, int items) 
+                Stock[] getStocks(string name, string sort, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
 			auto where = " where ";
 			if (!name.length) where = "";
 			else where = where ~ "name =? ";
-			c1.sql = "select id, name, value, date from stocks "~where~" limit ?,?";
-			c1.prepare();			
-			Variant[] va2;
-			if (!name.length) 
-			{	va2.length = 2;
-				va2[0] = items * (page-1);
-				va2[1] = items;
-			} else 
-			{	va2.length = 3;
-				va2[0] = name;
-				va2[1] = items * (page-1);
-				va2[2] = items;
-			}
-			c1.bindParameters(va2);			
+			auto orderBy = " order by " ~ sort;
+			c1.sql = "select id, name, value, date from stocks "~where~" " ~orderBy~" limit ?,?";
+			c1.prepare();
+			Variant[] va;
+			if (!name.length) va = variantArray(items * (page-1), items);	
+			else va = variantArray(name, items * (page-1), items);
+			c1.bindParameters(va);			
 			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
 			Stock[] stocks;
@@ -80,27 +79,31 @@ class Example1 : Example1API
 		   	}
 			return stocks;
                 }
-		Balance[] getBalances(string name, int page, int items) 
+		BalanceCollection getBalances(string name, string sort, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
 			auto where = " where ";
 			if (!name.length) where = "";
 			else where = where ~ "name =? ";
-			c1.sql = "select id, name, value, date from balances "~where~" limit ?,?";
+			auto orderBy = " order by " ~ sort;
+			Variant[] va;
+			c1.sql = "select count(id) from balances "~where~" limit 1";
 			c1.prepare();			
-			Variant[] va2;
-			if (!name.length) 
-			{	va2.length = 2;
-				va2[0] = items * (page-1);
-				va2[1] = items;
-			} else 
-			{	va2.length = 3;
-				va2[0] = name;
-				va2[1] = items * (page-1);
-				va2[2] = items;
-			}
-			c1.bindParameters(va2);			
+			if (!name.length)
+			{}
+			else			
+			{	va.length=1;
+			 	va[0] = name;
+				c1.bindParameters(va);
+			}		
+			long count = 0;			
+			c1.execPreparedTuple(count);
+			c1.sql = "select id, name, value, date from balances "~where~ " " ~orderBy~" limit ?,?";
+			c1.prepare();			
+			if (!name.length) va = variantArray(items * (page-1), items);	
+			else va = variantArray(name, items * (page-1), items);
+			c1.bindParameters(va);			
 			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
 			Balance[] balances;
@@ -112,7 +115,10 @@ class Example1 : Example1API
 				balance.date = row[3].get!(DateTime);
 				balances ~= balance;
 		   	}
-			return balances;
+			auto result = new BalanceCollection();
+			result.items = balances;
+			result.count = count;
+			return result;
                 }
 }
 shared static this()
@@ -121,9 +127,10 @@ shared static this()
 	registerRestInterface(routes, new Example1());
 	string port = to!string(getenv("PORT"));
 	settings.port = to!ushort(port);
+	settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
 	logInfo("Start with port "~port);
-	logInfo("Please open http://localhost:8080/info in your browser.");
+	logInfo("Please open http://localhost:"~port~"/info in your browser.");
 	logInfo("or on heroku open http://firstd.herokuapp.com/info in your browser.");
 }
 void main(string[] args)
