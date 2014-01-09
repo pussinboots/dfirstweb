@@ -150,7 +150,8 @@ shared static this()
 	registerRestInterface(routes, new Example1());
 	string port = to!string(getenv("PORT"));
 	settings.port = to!ushort(port);
-	settings.bindAddresses = ["::1", "127.0.0.1"];
+	//cause heroku boot of webapp to fail	
+	//settings.bindAddresses = ["::1", "127.0.0.1"];
 	listenHTTP(settings, routes);
 	logInfo("Start with port "~port);
 	logInfo("Please open http://localhost:"~port~"/info in your browser.");
