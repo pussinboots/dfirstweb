@@ -3,6 +3,7 @@ dfirstweb
 
 - Travis Ci https://travis-ci.org/pussinboots/dfirstweb
 - Heroku buildpack D https://github.com/pussinboots/heroku-buildpack-d
+- Live Demo Heroku <b>http://firstd.herokuapp.com/info</b>
 
 
 My first steps with the D programming language. I will try to build a simple json rest service
