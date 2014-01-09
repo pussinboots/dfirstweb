@@ -11,21 +11,27 @@ import std.conv;
 import std.string;
 import std.getopt;
 import std.variant;
+import std.datetime;
 
 class Collection(T)
-{	T[] items;
-	long count;
+{	T[] entries;
+	long length;
+	int page;
+	int items;
+	long total;
+	DateTime date;
 }
 class Stock {int id; string name; double value; DateTime date;}
 class Balance {int id; string name; double value; DateTime date;}
 //alias Collection!(Balance) BalanceCollection;
 class BalanceCollection : Collection!Balance {}
+class StockCollection : Collection!Stock {}
 
 @rootPath("/")
 interface Example1API 
 {       string getInfo();
 	string getStatus();
-	Stock[] getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
+	StockCollection getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
 	BalanceCollection getBalances(string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
 
@@ -52,10 +58,18 @@ class Example1 : Example1API
 			return "{service:'balanceservice', database:'"~db~"'}";
                 }
 
-                Stock[] getStocks(string name, string sort, int page, int items) 
+                StockCollection getStocks(string name, string sort, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
+
+			auto where2 = " where ";
+			if (!name.length) where2 = "";
+			else where2 = where2 ~ "name = '"~name~"'";
+			c1.sql = "select count(id) from stocks "~where2~" limit 1";
+			long count = 0;	
+			c1.execSQLTuple(count);
+
 			auto where = " where ";
 			if (!name.length) where = "";
 			else where = where ~ "name =? ";
@@ -77,33 +91,38 @@ class Example1 : Example1API
 				stock.date = row[3].get!(DateTime);
 				stocks ~= stock;
 		   	}
-			return stocks;
+			auto result = new StockCollection();
+			result.entries = stocks;
+			result.length = stocks.length;
+			result.total = count;
+			result.page = page;
+			result.items = items;
+			result.date = to!DateTime(Clock.currTime());
+			return result;
                 }
 		BalanceCollection getBalances(string name, string sort, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 			scope(exit) c.close();			
 			auto c1 = Command(c);
+			
+			auto where2 = " where ";
+			if (!name.length) where2 = "";
+			else where2 = where2 ~ "name = '"~name~"'";
+			
+			c1.sql = "select count(id) from balances "~where2~" limit 1";
+			long count = 0;	
+			c1.execSQLTuple(count);
+			Variant[] va;
 			auto where = " where ";
 			if (!name.length) where = "";
-			else where = where ~ "name =? ";
+			else where = where ~ "name = ? ";
 			auto orderBy = " order by " ~ sort;
-			Variant[] va;
-			c1.sql = "select count(id) from balances "~where~" limit 1";
-			c1.prepare();			
-			if (!name.length)
-			{}
-			else			
-			{	va.length=1;
-			 	va[0] = name;
-				c1.bindParameters(va);
-			}		
-			long count = 0;			
-			c1.execPreparedTuple(count);
 			c1.sql = "select id, name, value, date from balances "~where~ " " ~orderBy~" limit ?,?";
 			c1.prepare();			
 			if (!name.length) va = variantArray(items * (page-1), items);	
 			else va = variantArray(name, items * (page-1), items);
 			c1.bindParameters(va);			
+			logInfo("Retrieve items ");
 			ResultSet rs = c1.execPreparedResult();
 			Json.emptyObject;
 			Balance[] balances;
@@ -116,8 +135,12 @@ class Example1 : Example1API
 				balances ~= balance;
 		   	}
 			auto result = new BalanceCollection();
-			result.items = balances;
-			result.count = count;
+			result.entries = balances;
+			result.length = balances.length;
+			result.total = count;
+			result.page = page;
+			result.items = items;
+			result.date = to!DateTime(Clock.currTime());
 			return result;
                 }
 }
