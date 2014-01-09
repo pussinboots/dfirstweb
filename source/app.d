@@ -12,6 +12,7 @@ import std.string;
 import std.getopt;
 import std.variant;
 import std.datetime;
+import std.stdio;
 
 class Collection(T)
 {	T[] entries;
@@ -32,7 +33,7 @@ interface Example1API
 {       string getInfo();
 	string getStatus();
 	StockCollection getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
-	BalanceCollection getBalances(string name = "", string sort = "id desc", int page = 1, int items = 25);
+	BalanceCollection getBalances(DateTime date = DateTime.init, string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
 
 class Example1 : Example1API
@@ -100,27 +101,41 @@ class Example1 : Example1API
 			result.date = to!DateTime(Clock.currTime());
 			return result;
                 }
-		BalanceCollection getBalances(string name, string sort, int page, int items) 
+		BalanceCollection getBalances(DateTime date, string name, string sort, int page, int items) 
 		{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
-			scope(exit) c.close();			
+			scope(exit) c.close();	
+			writeln("date " ~to!string(date));		
 			auto c1 = Command(c);
-			
 			auto where2 = " where ";
 			if (!name.length) where2 = "";
 			else where2 = where2 ~ "name = '"~name~"'";
-			
+			if(date != DateTime.init)
+			{	if (!where2.length) where2 = " where date = '"~date.toISOExtString()~"' "; 
+				else where2 = where2 ~ " AND date = '"~date.toISOExtString()~"' ";
+			}
+
 			c1.sql = "select count(id) from balances "~where2~" limit 1";
+			writeln("SQL " ~to!string(c1.sql));	
 			long count = 0;	
 			c1.execSQLTuple(count);
+
 			Variant[] va;
 			auto where = " where ";
 			if (!name.length) where = "";
 			else where = where ~ "name = ? ";
+			if(date != DateTime.init)
+				if (!where.length) where = " where date = ? "; 
+				else where = where ~ " AND date = ? ";
+			else where2 = where2 ~ "name = '"~name~"'";
+
 			auto orderBy = " order by " ~ sort;
 			c1.sql = "select id, name, value, date from balances "~where~ " " ~orderBy~" limit ?,?";
-			c1.prepare();			
-			if (!name.length) va = variantArray(items * (page-1), items);	
-			else va = variantArray(name, items * (page-1), items);
+					
+			c1.prepare();	
+			if (!name.length && date == DateTime.init) va = variantArray(items * (page-1), items);	
+			else if (name.length && date != DateTime.init) va = variantArray(name, date, items * (page-1), items);
+			else if (!name.length && date != DateTime.init) va = variantArray(date, items * (page-1), items);
+			else if (!name.length && date == DateTime.init) va = variantArray(name, items * (page-1), items);
 			c1.bindParameters(va);			
 			logInfo("Retrieve items ");
 			ResultSet rs = c1.execPreparedResult();
@@ -144,6 +159,12 @@ class Example1 : Example1API
 			return result;
                 }
 }
+unittest
+{
+	Example1API e1 = new Example1();
+	assert(e1.getBalances().total == 150, "check if 150 balances exists");	
+}
+
 shared static this()
 {	auto settings = new HTTPServerSettings;
 	auto routes = new URLRouter;

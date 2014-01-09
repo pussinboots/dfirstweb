@@ -664,7 +664,7 @@ ubyte[] packLCS(void[] a)
    return t;
 }
 
-unittest
+/*unittest
 {
    bool isnull;
    ubyte[] uba = [ 0xde, 0xcc, 0xbb, 0xaa, 0x99, 0x88, 0x77, 0x66, 0x55, 0x01, 0x00 ];
@@ -735,7 +735,7 @@ unittest
    ubp = buf.ptr;
    x = parseLCS(ubp, isnull);
    assert(x.length == 0x20000ff && x[0] == '<' && x[0x20000fe] == '>');
-}
+}*/
 
 
 /**
@@ -1593,7 +1593,7 @@ public:
    @property string currentDB() { return _db; }
 }
 
-unittest
+/*unittest
 {
    bool ok = true;
    try
@@ -1633,7 +1633,7 @@ unittest
       ok = false;
    }
    assert(ok);
-}
+}*/
 
 /**
  * A struct to represent specializations of prepared statement parameters.
@@ -3624,7 +3624,7 @@ c.param(1) = "The answer";
    @ property ulong lastInsertID() { return _insertID; }
 }
 
-unittest
+/*unittest
 {
     struct X
    {
@@ -3871,7 +3871,7 @@ unittest
          }
 
          return &dg;
-      }
+      }*/
 /+
       c1.sql = "update tblob set lob=?, lob2=? where ikey=321";
       c1.prepare();
@@ -3934,7 +3934,7 @@ unittest
       DateTime dt4 = rs[0][4].get!(DateTime);
       writeln(to!string(dt4));
 +/
-   }
+   /*}
    catch (Exception x)
    {
       writefln("(%s: %s) %s", x.file, x.line, x.msg);
@@ -3942,7 +3942,7 @@ unittest
    }
    assert(ok);
    writeln("Command unit tests completed OK.");
-}
+}*/
 
 /**
  * A struct to hold column metadata
@@ -4254,7 +4254,7 @@ public:
    }
 }
 
-unittest
+/*unittest
 {
    auto c = new Connection("localhost", "root", "root", "mysql");
    scope(exit) c.close();
@@ -4353,5 +4353,5 @@ unittest
    assert(pa[0].db == "mysqld" && pa[0].name == "hello" && pa[0].type == "FUNCTION");
    pa = md.procedures();
    assert(pa[0].db == "mysqld" && pa[0].name == "insert2" && pa[0].type == "PROCEDURE");
-}
+}*/
 
