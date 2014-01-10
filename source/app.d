@@ -58,7 +58,7 @@ class Example1 : Example1API
 			{	db = db ~ ":" ~e.msg;
 				health = false;
 			} 
-			return "{service:'balanceservice', database:'"~db~"', health:"~health~"}";
+			return "{service:'balanceservice', database:'"~db~"', health:"~to!string(health)~"}";
                 }
 
                 StockCollection getStocks(string name, string sort, int page, int items) 
