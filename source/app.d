@@ -56,7 +56,7 @@ class Example1 : Example1API
 				db = "okay";
 			} catch (Exception e) 
 			{	db = db ~ ":" ~e.msg;
-				health = false
+				health = false;
 			} 
 			return "{service:'balanceservice', database:'"~db~"', health:"~health~"}";
                 }
