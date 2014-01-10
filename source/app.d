@@ -44,6 +44,7 @@ class Example1 : Example1API
                 }
 		string getStatus() 
 		{	string db = "failed";
+			bool health = true;
 			try  
 			{	auto c = new Connection("host=localhost;user=root;pwd=root;db=stock_manager");
 				scope(exit) c.close();
@@ -55,8 +56,9 @@ class Example1 : Example1API
 				db = "okay";
 			} catch (Exception e) 
 			{	db = db ~ ":" ~e.msg;
+				health = false
 			} 
-			return "{service:'balanceservice', database:'"~db~"'}";
+			return "{service:'balanceservice', database:'"~db~"', health:"~health~"}";
                 }
 
                 StockCollection getStocks(string name, string sort, int page, int items) 
