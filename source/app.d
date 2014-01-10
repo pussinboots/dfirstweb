@@ -160,7 +160,37 @@ class Example1 : Example1API
                 }
 }
 unittest
-{
+{	auto c = new Connection("host=localhost;user=root;pwd=root;db=mysql");
+	scope(exit) c.close();
+	auto command = Command(c);
+	ulong affectedRows;
+	command.sql ="DROP TABLE IF EXISTS balances;";
+	command.execSQL(affectedRows);
+	command.sql ="DROP TABLE IF EXISTS stocks;";
+	command.execSQL(affectedRows);
+	command.sql ="DROP DATABASE IF EXISTS stock_manager_test;";
+	command.execSQL(affectedRows);	
+	
+	command.sql = "create database stock_manager_test;";
+	command.execSQL(affectedRows);
+	command.sql = "use stock_manager_test;";
+	command.execSQL(affectedRows);
+	command.sql = "CREATE TABLE `balances` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `name` varchar(254) NOT NULL,
+		  `value` double NOT NULL,
+		  `date` timestamp NULL DEFAULT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=latin1";
+	command.execSQL(affectedRows);
+	command.sql = "CREATE TABLE `stocks` (
+		  `id` int(11) NOT NULL AUTO_INCREMENT,
+		  `name` varchar(254) NOT NULL,
+		  `value` double NOT NULL,
+		  `date` timestamp NULL DEFAULT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=latin1";
+	command.execSQL(affectedRows);	
 	Example1API e1 = new Example1();
 	assert(e1.getBalances().total == 150, "check if 150 balances exists");	
 }
