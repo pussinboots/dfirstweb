@@ -44,14 +44,17 @@ interface Example1API
 // the result is not needed but has to be defined show https://github.com/rejectedsoftware/vibe.d/blob/master/examples/rest/source/app.d#L272
 auto addAccessControlOrigin(string result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
+	return result;
 }
 
 auto addAccessControlOrigin(StockCollection result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
+	return result;
 }
 
 auto addAccessControlOrigin(BalanceCollection result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
+	return result;
 }
 
 class Example1 : Example1API
