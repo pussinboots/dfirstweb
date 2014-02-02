@@ -33,8 +33,11 @@ interface Example1API
 {       import vibe.http.rest : after;
 	@after!addAccessControlOrigin()
 	string getInfo();
+	@after!addAccessControlOrigin()
 	string getStatus();
+	@after!addAccessControlOrigin()
 	StockCollection getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
+	@after!addAccessControlOrigin()
 	BalanceCollection getBalances(DateTime date = DateTime.init, string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
 
