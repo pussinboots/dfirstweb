@@ -40,12 +40,17 @@ interface Example1API
 	@after!addAccessControlOrigin()
 	BalanceCollection getBalances(DateTime date = DateTime.init, string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
-
+//FIXME reduce this three function to one at the moment i dont find a way to deal with different result input types
+// the result is not needed but has to be defined show https://github.com/rejectedsoftware/vibe.d/blob/master/examples/rest/source/app.d#L272
 void addAccessControlOrigin(string result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
 }
 
-void addAccessControlOrigin(Collection result, HTTPServerRequest, HTTPServerResponse res)
+void addAccessControlOrigin(StockCollection result, HTTPServerRequest, HTTPServerResponse res)
+{	res.headers["Access-Control-Allow-Origin"] = "*";
+}
+
+void addAccessControlOrigin(BalanceCollection result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
 }
 
