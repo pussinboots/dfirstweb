@@ -35,9 +35,9 @@ interface Example1API
 	string getInfo();
 	@after!addAccessControlOrigin()
 	string getStatus();
-	@after!addAccessControlOrigin()
+	@after!addAccessControlOrigin2()
 	StockCollection getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
-	@after!addAccessControlOrigin()
+	@after!addAccessControlOrigin3()
 	BalanceCollection getBalances(DateTime date = DateTime.init, string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
 //FIXME reduce this three function to one at the moment i dont find a way to deal with different result input types
@@ -47,12 +47,12 @@ auto addAccessControlOrigin(string result, HTTPServerRequest, HTTPServerResponse
 	return result;
 }
 
-auto addAccessControlOrigin(StockCollection result, HTTPServerRequest, HTTPServerResponse res)
+auto addAccessControlOrigin2(StockCollection result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
 	return result;
 }
 
-auto addAccessControlOrigin(BalanceCollection result, HTTPServerRequest, HTTPServerResponse res)
+auto addAccessControlOrigin3(BalanceCollection result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
 	return result;
 }
