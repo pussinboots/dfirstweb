@@ -30,10 +30,17 @@ class StockCollection : Collection!Stock {}
 
 @rootPath("/")
 interface Example1API 
-{       string getInfo();
+{       import vibe.http.rest : after;
+	@after!addAccessControlOrigin()
+	string getInfo();
 	string getStatus();
 	StockCollection getStocks(string name = "", string sort = "id desc", int page = 1, int items = 25);
 	BalanceCollection getBalances(DateTime date = DateTime.init, string name = "", string sort = "id desc", int page = 1, int items = 25);
+}
+
+string addAccessControlOrigin(string result, HTTPServerRequest, HTTPServerResponse res)
+{	res.headers["Access-Control-Allow-Origin"] = "*";
+	return result;
 }
 
 class Example1 : Example1API
