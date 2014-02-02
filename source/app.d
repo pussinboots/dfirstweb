@@ -41,7 +41,11 @@ interface Example1API
 	BalanceCollection getBalances(DateTime date = DateTime.init, string name = "", string sort = "id desc", int page = 1, int items = 25);
 }
 
-void addAccessControlOrigin(auto result, HTTPServerRequest, HTTPServerResponse res)
+void addAccessControlOrigin(string result, HTTPServerRequest, HTTPServerResponse res)
+{	res.headers["Access-Control-Allow-Origin"] = "*";
+}
+
+void addAccessControlOrigin(Collection result, HTTPServerRequest, HTTPServerResponse res)
 {	res.headers["Access-Control-Allow-Origin"] = "*";
 }
 
