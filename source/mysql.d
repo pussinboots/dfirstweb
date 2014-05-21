@@ -142,7 +142,7 @@ TimeDiff toTimeDiff(string s)
       td.negative = true;
       t = -t;
    }
-   td.hours = t%24;
+   td.hours = (ubyte)t%24;
    td.days = t/24;
    munch(s, ":");
    td.minutes = parse!ubyte(s);
@@ -164,7 +164,7 @@ TimeOfDay toTimeOfDay(ubyte[] a)
 {
    enforceEx!MYX(a.length, "Supplied byte array is zero length");
    TimeOfDay tod;
-   ubyte l = a[0];
+   uint l = a[0];
    enforceEx!MYX(l == 0 || l == 5 || l == 8 || l == 12, "Bad Time length in binary row.");
 
    enforceEx!MYX(l >= 8, "Time column value is not in a time-of-day format");
